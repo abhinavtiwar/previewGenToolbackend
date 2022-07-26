@@ -1,10 +1,12 @@
-const express=require("express");
+const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-const port=5000;
-const app=express();
+const port = 5000;
+const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, {cors : {origin: ["http://localhost:3000"]} });
+const io = new Server(httpServer, {
+  cors: { origin: ["http://localhost:3000"] },
+});
 
 // recieving the event
 io.on("connection", (socket) => {
@@ -13,14 +15,13 @@ io.on("connection", (socket) => {
   socket.on("sendmsg", (data) => {
     console.log(data);
     data.sent = false;
-    socket.broadcast.emit('recmsg', data);
-
+    socket.broadcast.emit("recmsg", data);
   });
 });
 
-const userRouter=require("./routers/userRouter");//importing 
-const productRouter=require("./routers/productRouter");//importing
-const cors=require("cors");
+const userRouter = require("./routers/userRouter"); //importing
+const utilRouter = require("./routers/utils");
+const cors = require("cors");
 
 // middleware to convert client json data to javascript
 app.use(express.json());
@@ -28,22 +29,19 @@ app.use(express.json());
 app.use(cors({ origin: ["http://localhost:3000"] }));
 
 //middleware
-app.use("/user",userRouter);
-app.use("/prod",productRouter); 
+app.use("/user", userRouter);
+app.use("/util", utilRouter);
 
-app.use(express.static('./static'))
+app.use(express.static("./static/previews"));
 //route or endpoint
-app.get('/',(request,response) =>{
-    response.send("response from express");
-})
-app.get('/home',(request,response) =>{
-    response.send("response from express");
-})
-
-
-
+app.get("/", (request, response) => {
+  response.send("response from express");
+});
+app.get("/home", (request, response) => {
+  response.send("response from express");
+});
 
 //starting the server
-httpServer.listen(port,() =>{ 
-console.log("server started"); 
+httpServer.listen(port, () => {
+  console.log("server started");
 });
