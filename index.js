@@ -20,7 +20,7 @@ io.on("connection", (socket) => {
 });
 
 const userRouter = require("./routers/userRouter"); //importing
-const utilRouter = require("./routers/utils");
+const utilRouter = require("./routers/util");
 const cors = require("cors");
 
 // middleware to convert client json data to javascript
@@ -31,6 +31,7 @@ app.use(cors({ origin: ["http://localhost:3000"] }));
 //middleware
 app.use("/user", userRouter);
 app.use("/util", utilRouter);
+app.use(express.static('./static'));
 
 app.use(express.static("./static/previews"));
 //route or endpoint
